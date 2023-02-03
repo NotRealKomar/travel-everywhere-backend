@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build:local": "nest build",
+    "build": "nest build",
     "build:prod": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",

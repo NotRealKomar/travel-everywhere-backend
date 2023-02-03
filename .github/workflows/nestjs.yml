@@ -11,7 +11,7 @@ on:
       - '**'
 
 jobs:
-  build:
+  setup-and-build:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -22,8 +22,11 @@ jobs:
         with:
           node-version: 16
 
+      - name: Install packages
+        run: yarn install
+
       - name: Build
-        run: yarn build:prod
+        run: yarn build
 
       - name: Eslint
         run: yarn lint
