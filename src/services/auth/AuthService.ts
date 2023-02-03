@@ -44,7 +44,10 @@ export class AuthService {
   async signIn(args: SignInArgs): Promise<SignInResponse> {
     const user = await this.userService.getOneByEmail(args.username);
 
-    const isPasswordEqual = await compare(args.password, user.password);
+    const isPasswordEqual = await this.getIsPasswordEqual(
+      args.password,
+      user.password,
+    );
 
     if (isPasswordEqual === false) {
       throw new UnauthorizedException('Incorrect username or password');
@@ -109,5 +112,9 @@ export class AuthService {
         id: user._id,
       }),
     );
+  }
+
+  async getIsPasswordEqual(password: string, comparingPassword: string) {
+    return compare(password, comparingPassword);
   }
 }
