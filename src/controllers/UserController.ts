@@ -4,7 +4,7 @@ import { ReadonlyJwtAuthGuard } from '../guards/ReadonlyJwtAuthGuard';
 import { UserService } from '../services/user/UserService';
 import { UserModel } from '../models/UserModel';
 import { UpdateProfileData } from '../dto/UpdateProfileData';
-import { User } from 'src/schemas/User';
+import { User } from '../schemas/User';
 
 @Controller('/app/users')
 export class UserController {
