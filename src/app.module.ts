@@ -23,7 +23,6 @@ const AUTH_PROVIDERS = [JwtStrategy];
         MONGO_PASSWORD: Joi.string().required(),
         MONGO_DATABASE: Joi.string().required(),
         MONGO_URI: Joi.string().required(),
-        // MONGO_AUTH_SOURCE: Joi.string().required(),
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test', 'provision')
           .default('development'),
@@ -42,7 +41,6 @@ const AUTH_PROVIDERS = [JwtStrategy];
           username: configService.get<string>('MONGO_USERNAME'),
           password: configService.get<string>('MONGO_PASSWORD'),
         },
-        // authSource: configService.get<string>('MONGO_AUTH_SOURCE'),
       }),
       inject: [ConfigService],
     }),
