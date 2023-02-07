@@ -15,16 +15,16 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.3.0
 
       - name: Node.JS setup
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: 16
 
       - id: yarn-cache
         name: Setup packages cache
-        uses: actions/cache@v3
+        uses: actions/cachev3.2.4
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
@@ -41,3 +41,22 @@ jobs:
         
       - name: Test with coverage
         run: yarn test --coverage
+
+  deploy:
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/master'
+    needs: setup-and-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.3.0
+
+      - name: Deploy to Heroku
+        uses: gonuit/heroku-docker-deploy@v1.3.2
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          dockerfile_directory: ./
+          dockerfile_name: Dockerfile
+          docker_options: ""
+          process_type: web
