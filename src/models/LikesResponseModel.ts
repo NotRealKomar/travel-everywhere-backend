@@ -1,4 +1,4 @@
-import { GetCountAndIsLikedByEntityIdResponse } from 'src/services/like/LikeService';
+import { GetCountAndIsLikedByEntityIdResponse } from '../services/like/LikeService';
 
 type CreateArgs = {
   readonly likesCount: number;
