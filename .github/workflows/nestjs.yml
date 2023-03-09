@@ -1,0 +1,66 @@
+name: Nest.JS
+
+# TODO: split workflows for pull-requests and main branches
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  setup-and-build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        # NOTE: set specific version for better version control
+        uses: actions/checkout@v3.3.0
+
+      - name: Node.JS setup
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 16
+
+      # NOTE: basically caching speeds up the integration process,
+      #       but cache should be cleaned after pull-request is merged
+      #       or after certain amount of time
+      - id: yarn-cache 
+        name: Setup packages cache
+        uses: actions/cache@v3.2.4
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: Build
+        run: yarn build
+
+      - name: Eslint
+        run: yarn lint
+        
+      - name: Test with coverage
+        run: yarn test --coverage
+
+  deploy:
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/master'
+    needs: setup-and-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.3.0
+
+      - name: Deploy to Heroku
+        # NOTE: action can be replaced with a bunch of commands to deploy image to Heroku
+        #       but for this case I don't wanna overengineer it
+        uses: gonuit/heroku-docker-deploy@v1.3.2
+        with:
+          email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          dockerfile_directory: ./
+          dockerfile_name: Dockerfile
+          docker_options: ""
+          process_type: web

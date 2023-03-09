@@ -1,17 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { genSalt, hash } from 'bcrypt';
 
-const ROUNDS = 16;
 const PASSWORD_MAX_LENGTH = 6;
 
 @Injectable()
 export class PasswordService {
-  async generatePassword(initialString: string): Promise<string> {
-    const salt = await genSalt(ROUNDS);
-
-    return hash(initialString, salt);
-  }
-
   validatePassword(value: string | null | undefined): void {
     if (value === '' || value === null || value === undefined) {
       throw Error('Password cannot be empty');

@@ -1,4 +1,4 @@
-import { UserData } from 'src/dto/UserData';
+import { UserData } from '../dto/UserData';
 
 export class ChangePasswordData extends UserData {
   readonly password: string;

@@ -10,6 +10,7 @@ import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/JwtStrategy';
+import { MongoDbConfigService } from './services/config/MongoDbConfigService';
 
 const AUTH_MODULES = [PassportModule, JwtModule, JwtStrategy];
 const AUTH_PROVIDERS = [JwtStrategy];
@@ -22,8 +23,8 @@ const AUTH_PROVIDERS = [JwtStrategy];
         MONGO_USERNAME: Joi.string().required(),
         MONGO_PASSWORD: Joi.string().required(),
         MONGO_DATABASE: Joi.string().required(),
+        MONGO_AUTH_SOURCE: Joi.string().optional(),
         MONGO_URI: Joi.string().required(),
-        MONGO_AUTH_SOURCE: Joi.string().required(),
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test', 'provision')
           .default('development'),
@@ -35,15 +36,8 @@ const AUTH_PROVIDERS = [JwtStrategy];
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-        dbName: configService.get<string>('MONGO_DATABASE'),
-        auth: {
-          username: configService.get<string>('MONGO_USERNAME'),
-          password: configService.get<string>('MONGO_PASSWORD'),
-        },
-        authSource: configService.get<string>('MONGO_AUTH_SOURCE'),
-      }),
+      useFactory: async (configService: ConfigService) =>
+        new MongoDbConfigService(configService).getConfig(),
       inject: [ConfigService],
     }),
     MongooseModule.forFeature(SCHEMAS),
