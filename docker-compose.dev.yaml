@@ -10,7 +10,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=mongodb
   backend:
     build: .
-  ports:
-    - '3000:3000'
-  depends_on:
-    - mongodb
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
