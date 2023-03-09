@@ -10,7 +10,13 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=mongodb
   backend:
     build: .
+    env_file:
+    - .env.docker
     ports:
-      - '3000:3000'
+      - 3000:3000
     depends_on:
+      - mongodb
+    environment:
+      NODE_ENV: development
+    links:
       - mongodb
